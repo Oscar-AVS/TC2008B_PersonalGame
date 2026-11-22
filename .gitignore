@@ -6,20 +6,19 @@
 # See: https://github.com/github/gitignore/tree/main/Global
 #
 .utmp/
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
-/[Ll]ogs/
-/[Uu]ser[Ss]ettings/
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
 *.log
 
 # Memory Profiler generated files
 # MemoryCaptures can get excessive in size
 # They also could contain extremely sensitive data
-/[Mm]emory[Cc]aptures/
-
+[Mm]emory[Cc]aptures/
 # Recordings can get excessive in size
 /[Rr]ecordings/
 
@@ -92,8 +91,8 @@ crashlytics-build.properties
 /[Aa]ssets/**/TDImportCache.meta
 
 # Unity Crash Recovery generated files
-/[Aa]ssets/_Recovery/
-/[Aa]ssets/_Recovery.meta
+[Aa]ssets/_Recovery/
+[Aa]ssets/_Recovery.meta
 
 # Addressables default ignores, before user customizations
 # By default, Addressables content builds will generate addressables_content_state.bin
@@ -136,3 +135,6 @@ crashlytics-build.properties
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+.DS_Store
+.vscode/
