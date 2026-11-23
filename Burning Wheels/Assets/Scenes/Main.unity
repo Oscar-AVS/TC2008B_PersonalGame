@@ -7928,11 +7928,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8591097013723536466, guid: bfee8f30129024de99fecd465700c9d7, type: 3}
       propertyPath: m_Convex
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8591097013723536466, guid: bfee8f30129024de99fecd465700c9d7, type: 3}
       propertyPath: m_IsTrigger
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8762274002076299315, guid: bfee8f30129024de99fecd465700c9d7, type: 3}
       propertyPath: m_LocalScale.x
