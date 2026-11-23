@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class AutoJugador : MonoBehaviour
 {
-    public float velocidadMax = 25f;     // equivale a 250 km/h
+    public float velocidadMax = 400f;     // equivale a 250 km/h
     public float aceleracion = 8f;
     public float velocidadGiro = 95f;
     public float suavizadoVolante = 5f;  // qué tan rápido responden las teclas < >
