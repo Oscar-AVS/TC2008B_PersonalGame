@@ -1,5 +1,9 @@
 // Oscar Alexander Vilchis Soto
 // Script para el jugador para mover su monoplaza
+// AI disclosure, durante la mplementación se usó ayuda de la IA para comprender y pode rimplementar clauclos
+// de física para la aceleración y desaceleración, así como el giro del carro, sin embargo el uso fue exclusivo de 
+// comprensión de que usar y cómo implementarlo.
+
 using UnityEngine;
 
 /// Controla el movimiento físico, el efecto visual de derrape y el reinicio de posición del monoplaza
@@ -38,7 +42,7 @@ public class AutoJugador : MonoBehaviour
             rotacionInicialModelo = modeloAuto.localRotation;
     }
 
-    /// Lee las entradas del teclado en cada frame
+    // Lee las entradas del teclado en cada frame
     void Update()
     {
         // Si la carrera no ha iniciado o ya terminó, ignora el teclado
@@ -53,7 +57,6 @@ public class AutoJugador : MonoBehaviour
         inputGiro = Input.GetAxisRaw("Horizontal");
     }
 
-    /// Ejecuta el movimiento físico y actualiza los efectos
     void FixedUpdate()
     {
         // Mantiene el auto detenido en horizontal si no tiene permiso de moverse
@@ -68,7 +71,7 @@ public class AutoJugador : MonoBehaviour
         ActualizarDerrape();
     }
 
-    /// Calcula la aceleración y desaceleración progresiva hacia adelante o en reversa
+    // Calcula la aceleración y desaceleración paulatina hacia adelante o en reversa
     private void ActualizarVelocidad()
     {
         float ritmo = (inputAvance != 0f) ? aceleracion : desaceleracion;
@@ -78,7 +81,7 @@ public class AutoJugador : MonoBehaviour
         rb.linearVelocity = new Vector3(movimiento.x, rb.linearVelocity.y, movimiento.z);
     }
 
-    /// Aplica rotación suave proporcional a la velocidad actual del monoplaza
+    // Aplica rotación  proporcional a la velocidad del carrito
     private void ActualizarGiro()
     {
         giroActual = Mathf.MoveTowards(giroActual, inputGiro, suavizadoVolante * Time.fixedDeltaTime);
@@ -91,7 +94,7 @@ public class AutoJugador : MonoBehaviour
         rb.MoveRotation(rb.rotation * Quaternion.Euler(0f, angulo, 0f));
     }
 
-    /// Inclina el modelo 3D y activa las estelas de las llantas al frenar y girar
+    // Inclina el modelo 3D y activa las marcasd de las llantas al driftear (i wonder if u know how they live in tokyo)
     private void ActualizarDerrape()
     {
         bool estaDerrapando = (inputAvance < 0f && velocidadActual > 8f && Mathf.Abs(inputGiro) > 0.1f);
@@ -109,7 +112,7 @@ public class AutoJugador : MonoBehaviour
         }
     }
 
-    /// Regresa el monoplaza a la línea de salida con velocidad en cero
+    // Regresa el monoplaza a la línea de salida con velocidad en cero
     public void RegresarAlInicio()
     {
         velocidadActual = 0f;
@@ -124,7 +127,7 @@ public class AutoJugador : MonoBehaviour
         }
     }
 
-    /// Detecta colisiones sólidas contra vallas, muros o pasto fuera de pista
+    // Detecta colisiones sólidas contra vallas, muros o pasto fuera de pista
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Obstaculo"))
@@ -133,7 +136,7 @@ public class AutoJugador : MonoBehaviour
         }
     }
 
-    /// Detecta triggers marcados como obstáculo
+    // Detecta triggers marcados como obstáculo
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Obstaculo"))
@@ -143,6 +146,6 @@ public class AutoJugador : MonoBehaviour
         }
     }
 
-    /// Convierte la velocidad interna a escala visual en km/h para el HUD
+    // Convierte la velocidad interna a escala visual en km/h para el HUD
     public float ObtenerVelocidadKmh() => Mathf.Abs(velocidadActual) * 10f;
 }

@@ -1,5 +1,7 @@
 // Oscar Alexander Vilchis Soto
 // Script para gestionar la partda en general ( contador de vueltas, tiempo, etc)
+// AI disclosure, durante la mplementación se usó ayuda de la IA para comprender y poder adaptar el como s emanejan las pantallas de recargar la escena de la clase practica a mi juego 
+//  sin embargo el uso fue exclusivo para mayor comprensión de que usar y cómo adaptarlo y corregir unos errorcillos jeje.
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
