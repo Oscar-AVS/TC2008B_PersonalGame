@@ -88,7 +88,7 @@ public class GestorPartida : MonoBehaviour
     // Detecta cuando el jugador cruza la línea de meta y muestra la pantalla de victoria
     void OnTriggerEnter(Collider other)
     {
-        // Evita activar la meta al segundo cero si el auto arranca cerca de la línea
+        // Evita activar la meta al segundo cero si el auto arranca cerca de la línea de meta
         if (!juegoIniciado || finCarrera || tiempoTranscurrido < 3f) return;
 
         if (other.CompareTag("Jugador") || other.transform.root.CompareTag("Jugador"))
