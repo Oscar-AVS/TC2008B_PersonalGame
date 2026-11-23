@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-// Administra el flujo de la partida, el cronómetro, el HUD y las pantallas de inicio y victoria
+// Administra el flujo de la partida, el cronómetro, el HUD y las pantallas de inicio, victoria y derrota
 public class GestorPartida : MonoBehaviour
 {
     [Header("Configuración de Carrera")]
@@ -22,6 +22,7 @@ public class GestorPartida : MonoBehaviour
     public GameObject panelInicio;        // panel inicial con el botón Jugar
     public GameObject panelVictoria;      // panel final con el botón Jugar de nuevo
     public TMP_Text textoVictoria;        // texto dentro de PanelVictoria para mostrar el tiempo
+    public GameObject panelDerrota;       // panel final cuando se agota el tiempo
 
     private float tiempoRestante;
     private float tiempoTranscurrido = 0f;
@@ -38,6 +39,7 @@ public class GestorPartida : MonoBehaviour
         if (autoJugador != null) autoJugador.puedeMoverse = false;
         if (panelInicio != null) panelInicio.SetActive(true);
         if (panelVictoria != null) panelVictoria.SetActive(false);
+        if (panelDerrota != null) panelDerrota.SetActive(false);
 
         if (textoVueltas != null) textoVueltas.text = "Meta: Cruza antes de 60s";
         if (textoTiempo != null) textoTiempo.text = "Tiempo: " + tiempoLimite.ToString("F1") + " s";
@@ -73,7 +75,9 @@ public class GestorPartida : MonoBehaviour
 
             textoTiempo.text = "Tiempo: 0.0 s";
             textoVueltas.text = "¡Se acabó el tiempo!";
-            Invoke("ReiniciarCarrera", 2f);
+
+            // Muestra la pantalla de derrota
+            if (panelDerrota != null) panelDerrota.SetActive(true);
         }
         else
         {
