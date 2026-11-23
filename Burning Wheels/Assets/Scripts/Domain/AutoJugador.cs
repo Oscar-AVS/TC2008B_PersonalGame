@@ -19,6 +19,9 @@ public class AutoJugador : MonoBehaviour
     public float anguloDerrape = 18f;
     public TrailRenderer[] marcasLlantas; // marcas en el piso
 
+    [HideInInspector]
+    public bool puedeMoverse = false;     // bloquea el movimiento en pantallas de menú o victoria
+
     private Rigidbody rb;
     private float velocidadActual;
     private float giroActual;
@@ -38,6 +41,14 @@ public class AutoJugador : MonoBehaviour
     /// Lee las entradas del teclado en cada frame
     void Update()
     {
+        // Si la carrera no ha iniciado o ya terminó, ignora el teclado
+        if (!puedeMoverse)
+        {
+            inputAvance = 0f;
+            inputGiro = 0f;
+            return;
+        }
+
         inputAvance = Input.GetAxisRaw("Vertical");
         inputGiro = Input.GetAxisRaw("Horizontal");
     }
@@ -45,11 +56,19 @@ public class AutoJugador : MonoBehaviour
     /// Ejecuta el movimiento físico y actualiza los efectos
     void FixedUpdate()
     {
+        // Mantiene el auto detenido en horizontal si no tiene permiso de moverse
+        if (!puedeMoverse)
+        {
+            rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+            return;
+        }
+
         ActualizarVelocidad();
         ActualizarGiro();
         ActualizarDerrape();
     }
 
+    /// Calcula la aceleración y desaceleración progresiva hacia adelante o en reversa
     private void ActualizarVelocidad()
     {
         float ritmo = (inputAvance != 0f) ? aceleracion : desaceleracion;
@@ -59,6 +78,7 @@ public class AutoJugador : MonoBehaviour
         rb.linearVelocity = new Vector3(movimiento.x, rb.linearVelocity.y, movimiento.z);
     }
 
+    /// Aplica rotación suave proporcional a la velocidad actual del monoplaza
     private void ActualizarGiro()
     {
         giroActual = Mathf.MoveTowards(giroActual, inputGiro, suavizadoVolante * Time.fixedDeltaTime);
@@ -71,6 +91,7 @@ public class AutoJugador : MonoBehaviour
         rb.MoveRotation(rb.rotation * Quaternion.Euler(0f, angulo, 0f));
     }
 
+    /// Inclina el modelo 3D y activa las estelas de las llantas al frenar y girar
     private void ActualizarDerrape()
     {
         bool estaDerrapando = (inputAvance < 0f && velocidadActual > 8f && Mathf.Abs(inputGiro) > 0.1f);
@@ -103,6 +124,7 @@ public class AutoJugador : MonoBehaviour
         }
     }
 
+    /// Detecta colisiones sólidas contra vallas, muros o pasto fuera de pista
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Obstaculo"))
@@ -111,6 +133,7 @@ public class AutoJugador : MonoBehaviour
         }
     }
 
+    /// Detecta triggers marcados como obstáculo
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Obstaculo"))
@@ -120,5 +143,6 @@ public class AutoJugador : MonoBehaviour
         }
     }
 
+    /// Convierte la velocidad interna a escala visual en km/h para el HUD
     public float ObtenerVelocidadKmh() => Mathf.Abs(velocidadActual) * 10f;
 }

@@ -4,24 +4,52 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
+// Administra el flujo de la partida, el cronómetro, el HUD y las pantallas de inicio y victoria
 public class GestorPartida : MonoBehaviour
 {
+    [Header("Configuración de Carrera")]
     public float tiempoLimite = 60f;
     public AutoJugador autoJugador;
 
+    [Header("HUD en Juego")]
     public TMP_Text textoVelocidad;
     public TMP_Text textoVueltas;
     public TMP_Text textoTiempo;
 
+    [Header("Pantallas de Menú")]
+    public GameObject panelInicio;        // panel inicial con el botón Jugar
+    public GameObject panelVictoria;      // panel final con el botón Jugar de nuevo
+    public TMP_Text textoVictoria;        // texto dentro de PanelVictoria para mostrar el tiempo
+
     private float tiempoRestante;
+    private float tiempoTranscurrido = 0f;
+    private bool juegoIniciado = false;
     private bool finCarrera = false;
 
+    // Prepara el estado inicial de la partida y muestra el menú de inicio
     void Start()
     {
         tiempoRestante = tiempoLimite;
-        textoVueltas.text = "Meta: Cruza antes de 60s";
+        juegoIniciado = false;
+        finCarrera = false;
+
+        if (autoJugador != null) autoJugador.puedeMoverse = false;
+        if (panelInicio != null) panelInicio.SetActive(true);
+        if (panelVictoria != null) panelVictoria.SetActive(false);
+
+        if (textoVueltas != null) textoVueltas.text = "Meta: Cruza antes de 60s";
+        if (textoTiempo != null) textoTiempo.text = "Tiempo: " + tiempoLimite.ToString("F1") + " s";
     }
 
+    // Inicia la carrera al presionar el botón Jugar en el menú principal
+    public void IniciarJuego()
+    {
+        juegoIniciado = true;
+        if (panelInicio != null) panelInicio.SetActive(false);
+        if (autoJugador != null) autoJugador.puedeMoverse = true;
+    }
+
+    // Actualiza el velocímetro y el cronómetro mientras la carrera está activa
     void Update()
     {
         if (autoJugador != null && textoVelocidad != null)
@@ -30,14 +58,17 @@ public class GestorPartida : MonoBehaviour
             textoVelocidad.text = velocidad + " km/h";
         }
 
-        if (finCarrera) return;
+        if (!juegoIniciado || finCarrera) return;
 
+        tiempoTranscurrido += Time.deltaTime;
         tiempoRestante -= Time.deltaTime;
 
         if (tiempoRestante <= 0f)
         {
             tiempoRestante = 0f;
             finCarrera = true;
+            if (autoJugador != null) autoJugador.puedeMoverse = false;
+
             textoTiempo.text = "Tiempo: 0.0 s";
             textoVueltas.text = "¡Se acabó el tiempo!";
             Invoke("ReiniciarCarrera", 2f);
@@ -48,19 +79,33 @@ public class GestorPartida : MonoBehaviour
         }
     }
 
+    // Detecta cuando el jugador cruza la línea de meta y muestra la pantalla de victoria
     void OnTriggerEnter(Collider other)
     {
-        if (finCarrera) return;
+        // Evita activar la meta al segundo cero si el auto arranca cerca de la línea
+        if (!juegoIniciado || finCarrera || tiempoTranscurrido < 3f) return;
 
         if (other.CompareTag("Jugador") || other.transform.root.CompareTag("Jugador"))
         {
             finCarrera = true;
+            if (autoJugador != null) autoJugador.puedeMoverse = false;
+
             float tiempoTardado = tiempoLimite - tiempoRestante;
             textoVueltas.text = "¡Ganaste en " + tiempoTardado.ToString("F1") + " s!";
+
+            if (panelVictoria != null)
+            {
+                panelVictoria.SetActive(true);
+                if (textoVictoria != null)
+                {
+                    textoVictoria.text = "¡GANASTE!\nTiempo: " + tiempoTardado.ToString("F1") + " s";
+                }
+            }
         }
     }
 
-    void ReiniciarCarrera()
+    // Recarga la escena actual para jugar una nueva partida
+    public void ReiniciarCarrera()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
